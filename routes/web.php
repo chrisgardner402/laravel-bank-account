@@ -12,3 +12,5 @@
 */
 
 Route::get('/health', 'HealthController@check');
+
+Route::get('/account', 'AccountController@index');
