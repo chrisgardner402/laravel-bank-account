@@ -13,4 +13,4 @@
 
 Route::get('/health', 'HealthController@check');
 
-Route::get('/account', 'AccountController@index');
+Route::get('/accounts/{userid}', 'AccountsController@show');
