@@ -10,7 +10,7 @@ class AccountsController extends Controller
 {
     public function show($userid)
     {
-        $accounts = Account::where('user_id', '=', $userid)->firstOrFail();
+        $accounts = Account::where('user_id', '=', $userid)->orderBy('account_id')->get();
 
         return response($accounts, 200)->header('Content-Type', 'application/json');
     }
