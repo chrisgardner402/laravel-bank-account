@@ -17,7 +17,8 @@ class CreateAccountsTable extends Migration
             $table->char('account_id', 11)->primary();
             $table->unsignedInteger('user_id');
             $table->unsignedBigInteger('balance');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

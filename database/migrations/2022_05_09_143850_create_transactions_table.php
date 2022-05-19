@@ -14,11 +14,13 @@ class CreateTransactionsTable extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->char('transaction_id', 36)->primary();
             $table->char('account_id', 11);
+            $table->unsignedBigInteger('transaction_id');
             $table->unsignedBigInteger('deposit')->default(0);
             $table->unsignedBigInteger('withdraw')->default(0);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->primary(['account_id', 'transaction_id']);
             $table->foreign('account_id')->references('account_id')->on('accounts');
         });
     }
