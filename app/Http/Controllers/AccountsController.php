@@ -7,6 +7,7 @@ use App\Transaction;
 use App\Http\Resources\AccountBalance as AccountBalanceResource;
 use App\Http\Resources\AccountList as AccountListResource;
 use App\Http\Resources\AccountTransaction as AccountTransactionResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AccountsController extends Controller
 {
@@ -14,9 +15,9 @@ class AccountsController extends Controller
      * Return a resource collection for a list of accounts.
      *
      * @param int $userid
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
-    public function getAccountList($userid)
+    public function getAccountList(int $userid): AnonymousResourceCollection
     {
         $accounts = Account::where('user_id', '=', $userid)->orderBy('account_id')->get();
 
@@ -26,12 +27,12 @@ class AccountsController extends Controller
     /**
      * Return a resource for account balance.
      *
-     * @param string $accountid
-     * @return App\Http\Resources\AccountBalance
+     * @param string $accountId
+     * @return AccountBalanceResource
      */
-    public function getAccountBalance($accountid)
+    public function getAccountBalance(string $accountId): AccountBalanceResource
     {
-        $account = Account::where('account_id', '=', $accountid)->first();
+        $account = Account::where('account_id', '=', $accountId)->first();
 
         return new AccountBalanceResource($account);
     }
@@ -39,12 +40,12 @@ class AccountsController extends Controller
     /**
      * Return a resource collection for account transactions.
      *
-     * @param string $accountid
-     * @return
+     * @param string $accountId
+     * @return AnonymousResourceCollection
      */
-    public function getAccountTransactions($accountid)
+    public function getAccountTransactions(string $accountId): AnonymousResourceCollection
     {
-        $transactions = Transaction::where('account_id', '=', $accountid)->orderBy('transaction_id')->get();
+        $transactions = Transaction::where('account_id', '=', $accountId)->orderBy('transaction_id')->get();
 
         return AccountTransactionResource::collection($transactions);
     }
