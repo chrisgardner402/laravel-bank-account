@@ -8,6 +8,7 @@ use App\Http\Resources\AccountBalance as AccountBalanceResource;
 use App\Http\Resources\AccountList as AccountListResource;
 use App\Http\Resources\AccountTransaction as AccountTransactionResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Log;
 
 class AccountsController extends Controller
 {
@@ -19,8 +20,8 @@ class AccountsController extends Controller
      */
     public function getAccountList(int $userid): AnonymousResourceCollection
     {
+        Log::info('"GET /accounts/' . $userid . '"');
         $accounts = Account::where('user_id', '=', $userid)->orderBy('account_id')->get();
-
         return AccountListResource::collection($accounts);
     }
 
@@ -32,8 +33,8 @@ class AccountsController extends Controller
      */
     public function getAccountBalance(string $accountId): AccountBalanceResource
     {
+        Log::info('"GET /account/' . $accountId . '/balance"');
         $account = Account::where('account_id', '=', $accountId)->first();
-
         return new AccountBalanceResource($account);
     }
 
@@ -45,8 +46,8 @@ class AccountsController extends Controller
      */
     public function getAccountTransactions(string $accountId): AnonymousResourceCollection
     {
+        Log::info('"GET /account/' . $accountId . '/transactions"');
         $transactions = Transaction::where('account_id', '=', $accountId)->orderBy('transaction_id')->get();
-
         return AccountTransactionResource::collection($transactions);
     }
 }
