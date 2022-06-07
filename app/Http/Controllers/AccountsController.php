@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Account;
+use App\Services\AccountService;
+use App\Services\AccountServiceInterface;
 use App\Transaction;
 use App\Http\Resources\AccountBalance as AccountBalanceResource;
 use App\Http\Resources\AccountList as AccountListResource;
@@ -12,6 +14,13 @@ use Illuminate\Support\Facades\Log;
 
 class AccountsController extends Controller
 {
+    protected AccountService $service;
+
+    public function __construct(AccountService $accountService)
+    {
+        $this->service = $accountService;
+    }
+
     /**
      * Return a resource collection for a list of accounts.
      *
@@ -21,7 +30,9 @@ class AccountsController extends Controller
     public function getAccountList(int $userid): AnonymousResourceCollection
     {
         Log::info('"GET /accounts/' . $userid . '"');
-        $accounts = Account::where('user_id', '=', $userid)->orderBy('account_id')->get();
+
+        $accounts = $this->service->getAccountList($userid);
+
         return AccountListResource::collection($accounts);
     }
 
@@ -34,7 +45,9 @@ class AccountsController extends Controller
     public function getAccountBalance(string $accountId): AccountBalanceResource
     {
         Log::info('"GET /account/' . $accountId . '/balance"');
-        $account = Account::where('account_id', '=', $accountId)->first();
+
+        $account = $this->service->getAccountBalance($accountId);
+
         return new AccountBalanceResource($account);
     }
 
@@ -47,7 +60,9 @@ class AccountsController extends Controller
     public function getAccountTransactions(string $accountId): AnonymousResourceCollection
     {
         Log::info('"GET /account/' . $accountId . '/transactions"');
-        $transactions = Transaction::where('account_id', '=', $accountId)->orderBy('transaction_id')->get();
+
+        $transactions = $this->service->getAccountTransactions($accountId);
+
         return AccountTransactionResource::collection($transactions);
     }
 }

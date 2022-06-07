@@ -16,9 +16,8 @@ class GetAccountBalanceTest extends TestCase
     public function testExample()
     {
         $accountId = "10010000001";
-        $response = $this->get('/account/' . $accountId  . "/balance");
+        $response = $this->get('/account/' . $accountId . "/balance");
 
         $response->assertStatus(200);
     }
 }
-
