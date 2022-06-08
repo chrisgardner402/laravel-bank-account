@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Account;
 use App\Services\AccountService;
-use App\Services\AccountServiceInterface;
-use App\Transaction;
 use App\Http\Resources\AccountBalance as AccountBalanceResource;
 use App\Http\Resources\AccountList as AccountListResource;
 use App\Http\Resources\AccountTransaction as AccountTransactionResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 
@@ -27,9 +25,10 @@ class AccountsController extends Controller
      * @param int $userid
      * @return AnonymousResourceCollection
      */
-    public function getAccountList(int $userid): AnonymousResourceCollection
+    public function getAccountList(Request $request, int $userid): AnonymousResourceCollection
     {
         Log::info('"GET /accounts/' . $userid . '"');
+        Log::debug('headers=' . $request->headers);
 
         $accounts = $this->service->getAccountList($userid);
 
@@ -42,9 +41,10 @@ class AccountsController extends Controller
      * @param string $accountId
      * @return AccountBalanceResource
      */
-    public function getAccountBalance(string $accountId): AccountBalanceResource
+    public function getAccountBalance(Request $request, string $accountId): AccountBalanceResource
     {
         Log::info('"GET /account/' . $accountId . '/balance"');
+        Log::debug('headers=' . $request->headers);
 
         $account = $this->service->getAccountBalance($accountId);
 
@@ -57,9 +57,10 @@ class AccountsController extends Controller
      * @param string $accountId
      * @return AnonymousResourceCollection
      */
-    public function getAccountTransactions(string $accountId): AnonymousResourceCollection
+    public function getAccountTransactions(Request $request, string $accountId): AnonymousResourceCollection
     {
         Log::info('"GET /account/' . $accountId . '/transactions"');
+        Log::debug('headers=' . $request->headers);
 
         $transactions = $this->service->getAccountTransactions($accountId);
 
