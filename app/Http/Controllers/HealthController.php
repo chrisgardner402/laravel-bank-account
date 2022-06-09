@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class HealthController extends Controller
 {
-    public function check(): string
+    /**
+     * Health check
+     *
+     * @return JsonResponse
+     */
+    public function check(): JsonResponse
     {
         Log::info('"GET /health"');
-        return 'OK';
+        return response()->json([
+            'status' => 'OK'
+        ]);
     }
 }

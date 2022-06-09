@@ -6,9 +6,10 @@ use App\Services\AccountService;
 use App\Http\Resources\AccountBalance as AccountBalanceResource;
 use App\Http\Resources\AccountList as AccountListResource;
 use App\Http\Resources\AccountTransaction as AccountTransactionResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AccountsController extends Controller
 {
@@ -22,48 +23,87 @@ class AccountsController extends Controller
     /**
      * Return a resource collection for a list of accounts.
      *
+     * @param Request $request
      * @param int $userid
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function getAccountList(Request $request, int $userid): AnonymousResourceCollection
+    public function getAccountList(Request $request, int $userid): JsonResponse
     {
         Log::info('"GET /accounts/' . $userid . '"');
         Log::debug('headers=' . $request->headers);
 
+        $validator = Validator::make(['$userid' => $userid], [
+            '$userid' => 'required|integer|digits:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error'
+            ], 400);
+        }
+
         $accounts = $this->service->getAccountList($userid);
 
-        return AccountListResource::collection($accounts);
+        return response()->json(array(
+            'data' => AccountListResource::collection($accounts)
+        ));
     }
 
     /**
      * Return a resource for account balance.
      *
+     * @param Request $request
      * @param string $accountId
-     * @return AccountBalanceResource
+     * @return JsonResponse
      */
-    public function getAccountBalance(Request $request, string $accountId): AccountBalanceResource
+    public function getAccountBalance(Request $request, string $accountId): JsonResponse
     {
         Log::info('"GET /account/' . $accountId . '/balance"');
         Log::debug('headers=' . $request->headers);
 
+        $validator = Validator::make(['$accountId' => $accountId], [
+            '$accountId' => 'required|integer|digits:11'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error'
+            ], 400);
+        }
+
         $account = $this->service->getAccountBalance($accountId);
 
-        return new AccountBalanceResource($account);
+        return response()->json(array(
+            'data' => new AccountBalanceResource($account)
+        ));
     }
 
     /**
      * Return a resource collection for account transactions.
      *
+     * @param Request $request
      * @param string $accountId
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function getAccountTransactions(Request $request, string $accountId): AnonymousResourceCollection
+    public function getAccountTransactions(Request $request, string $accountId): JsonResponse
     {
         Log::info('"GET /account/' . $accountId . '/transactions"');
         Log::debug('headers=' . $request->headers);
 
+        $validator = Validator::make(['$accountId' => $accountId], [
+            '$accountId' => 'required|integer|digits:11'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error'
+            ], 400);
+        }
+
         $transactions = $this->service->getAccountTransactions($accountId);
 
-        return AccountTransactionResource::collection($transactions);
+        return response()->json(array(
+            'data' => AccountTransactionResource::collection($transactions)
+        ));
     }
 }
