@@ -2,22 +2,21 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetAccountTransactionsTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    public function test_valid_account_id()
     {
         $accountId = "10010000001";
         $response = $this->get('/account/' . $accountId . "/transactions");
-
         $response->assertStatus(200);
+    }
+
+    public function test_invalid_account_id()
+    {
+        $accountId = "1001000000";
+        $response = $this->get('/account/' . $accountId . "/transactions");
+        $response->assertStatus(400);
     }
 }

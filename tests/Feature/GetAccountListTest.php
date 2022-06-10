@@ -2,22 +2,21 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class GetAccountListTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testExample()
+    public function test_valid_userid()
     {
         $userId = "1000000001";
         $response = $this->get("/accounts/" . $userId);
-
         $response->assertStatus(200);
+    }
+
+    public function test_invalid_userid()
+    {
+        $userId = "100000000";
+        $response = $this->get("/accounts/" . $userId);
+        $response->assertStatus(400);
     }
 }
