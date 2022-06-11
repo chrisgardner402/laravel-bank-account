@@ -29,8 +29,7 @@ class AccountsController extends Controller
      */
     public function getAccountList(Request $request, int $userid): JsonResponse
     {
-        Log::info('"GET /accounts/' . $userid . '"');
-        Log::debug('headers=' . $request->headers);
+        $this->logRequest($request);
 
         $validator = Validator::make(['$userid' => $userid], [
             '$userid' => 'required|integer|digits:10'
@@ -58,8 +57,7 @@ class AccountsController extends Controller
      */
     public function getAccountBalance(Request $request, string $accountId): JsonResponse
     {
-        Log::info('"GET /account/' . $accountId . '/balance"');
-        Log::debug('headers=' . $request->headers);
+        $this->logRequest($request);
 
         $validator = Validator::make(['$accountId' => $accountId], [
             '$accountId' => 'required|integer|digits:11'
@@ -87,8 +85,7 @@ class AccountsController extends Controller
      */
     public function getAccountTransactions(Request $request, string $accountId): JsonResponse
     {
-        Log::info('"GET /account/' . $accountId . '/transactions"');
-        Log::debug('headers=' . $request->headers);
+        $this->logRequest($request);
 
         $validator = Validator::make(['$accountId' => $accountId], [
             '$accountId' => 'required|integer|digits:11'
@@ -105,5 +102,11 @@ class AccountsController extends Controller
         return response()->json(array(
             'data' => AccountTransactionResource::collection($transactions)
         ));
+    }
+
+    private function logRequest(Request $request): void
+    {
+        Log::info('"' . $request->method() . ' ' . $request->path() . '"');
+        Log::debug('headers=' . $request->headers);
     }
 }
