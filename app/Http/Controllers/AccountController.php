@@ -4,48 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Services\AccountService;
 use App\Http\Resources\AccountBalance as AccountBalanceResource;
-use App\Http\Resources\AccountList as AccountListResource;
 use App\Http\Resources\AccountTransaction as AccountTransactionResource;
+use App\Services\LogService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class AccountsController extends Controller
+class AccountController extends Controller
 {
+    protected LogService $logService;
     protected AccountService $service;
 
-    public function __construct(AccountService $accountService)
+    public function __construct(LogService $logService, AccountService $accountService)
     {
+        $this->logService = $logService;
         $this->service = $accountService;
-    }
-
-    /**
-     * Return a resource collection for a list of accounts.
-     *
-     * @param Request $request
-     * @param int $userid
-     * @return JsonResponse
-     */
-    public function getAccountList(Request $request, int $userid): JsonResponse
-    {
-        $this->logRequest($request);
-
-        $validator = Validator::make(['$userid' => $userid], [
-            '$userid' => 'required|integer|digits:10'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error'
-            ], 400);
-        }
-
-        $accounts = $this->service->getAccountList($userid);
-
-        return response()->json(array(
-            'data' => AccountListResource::collection($accounts)
-        ));
     }
 
     /**
@@ -55,9 +28,9 @@ class AccountsController extends Controller
      * @param string $accountId
      * @return JsonResponse
      */
-    public function getAccountBalance(Request $request, string $accountId): JsonResponse
+    public function getBalances(Request $request, string $accountId): JsonResponse
     {
-        $this->logRequest($request);
+        $this->logService->logRequest($request);
 
         $validator = Validator::make(['$accountId' => $accountId], [
             '$accountId' => 'required|integer|digits:11'
@@ -83,9 +56,9 @@ class AccountsController extends Controller
      * @param string $accountId
      * @return JsonResponse
      */
-    public function getAccountTransactions(Request $request, string $accountId): JsonResponse
+    public function getTransactions(Request $request, string $accountId): JsonResponse
     {
-        $this->logRequest($request);
+        $this->logService->logRequest($request);
 
         $validator = Validator::make(['$accountId' => $accountId], [
             '$accountId' => 'required|integer|digits:11'
@@ -102,11 +75,5 @@ class AccountsController extends Controller
         return response()->json(array(
             'data' => AccountTransactionResource::collection($transactions)
         ));
-    }
-
-    private function logRequest(Request $request): void
-    {
-        Log::info('"' . $request->method() . ' ' . $request->path() . '"');
-        Log::debug('headers=' . $request->headers);
     }
 }

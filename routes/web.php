@@ -19,8 +19,8 @@ Route::get('/', function () {
 
 Route::get('/health', 'HealthController@check');
 
-Route::get('/accounts/{userid}', 'AccountsController@getAccountList');
+Route::get('/users/{userid}/accounts', 'UserController@getAccounts');
 
-Route::get('/account/{accountId}/balance', 'AccountsController@getAccountBalance');
+Route::get('/accounts/{accountId}/balances', 'AccountController@getBalances');
 
-Route::get('/account/{accountId}/transactions', 'AccountsController@getAccountTransactions');
+Route::get('/accounts/{accountId}/transactions', 'AccountController@getTransactions');

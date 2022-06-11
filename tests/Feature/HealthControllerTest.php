@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
-class HealthTest extends TestCase
+class HealthControllerTest extends TestCase
 {
     public function test_health_check()
     {
